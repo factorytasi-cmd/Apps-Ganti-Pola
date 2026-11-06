@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0A1A1D">
+  <title>LITRA-ASI — Ganti Pola Area</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0A1A1D; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 20px 16px;
+    }
+    .phone { width: 100%; max-width: 420px; background: #0A1A1D; border-radius: 28px; overflow: hidden; border: 0.5px solid rgba(255,255,255,0.08); }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* HEADER */
+    .header-zone { background: #0A1A1D; padding: 16px 22px 28px; }
+    .status-bar { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; }
+    .logo-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; }
+    .logo-box { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #378ADD, #1D9E75); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: white; flex-shrink: 0; }
+    .logo-text { font-size: 26px; font-weight: 700; color: white; letter-spacing: 1.5px; }
+    .tagline { text-align: center; font-size: 9px; color: #5DCAA5; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+    .subtitle { text-align: center; font-size: 10px; color: rgba(255,255,255,0.28); margin-bottom: 18px; line-height: 1.4; }
+    .date-pill { display: flex; justify-content: center; }
+    .date-pill span.pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 99px; padding: 6px 16px; font-size: 11px; color: rgba(255,255,255,0.5); }
+    .back-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.13); border-radius: 99px; padding: 7px 14px; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; margin: 14px auto 0; width: fit-content; }
+    .back-btn:active { background: rgba(255,255,255,0.12); }
+
+    .area-label { text-align: center; margin-top: 4px; }
+    .area-label-text { font-size: 20px; font-weight: 700; color: white; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1.2; padding: 0 16px; }
+    .area-divider { width: 40px; height: 2px; background: linear-gradient(90deg,#378ADD,#1D9E75); border-radius: 99px; margin: 8px auto 0; }
+    .crumb { text-align: center; margin: 6px 0 0; font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 1px; padding-bottom: 2px; }
+
+    /* CONTENT */
+    .content-zone, .form-zone { background: #F0F2F1; padding: 24px 18px; }
+    .form-zone { padding: 20px 18px 30px; }
+    .section-lbl { font-size: 10px; color: #999; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .cards { display: flex; flex-direction: column; gap: 14px; }
+    .card { border-radius: 20px; overflow: hidden; display: block; cursor: pointer; transition: transform 0.12s, opacity 0.12s; }
+    .card:active { transform: scale(0.97); opacity: 0.9; }
+    .card-inner { padding: 20px; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .card-badge { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
+    .card-icon-wrap { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .card-title { font-size: 21px; font-weight: 600; color: #111; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .card-desc { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 18px; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-hint { font-size: 11px; color: #aaa; display: flex; align-items: center; gap: 4px; }
+    .card-btn { display: inline-flex; align-items: center; gap: 4px; padding: 7px 11px; border-radius: 99px; font-size: 11px; font-weight: 500; border: 1.5px solid; }
+    .card-placeholder { opacity: 0.8; border-style: dashed !important; }
+
+    /* Aksen per menu: oranye (Ganti Pola), ungu (Kulit), indigo (Non Kulit), teal (Logo) */
+    .acc-gp   { background: rgba(234,88,12,0.1);   border: 0.5px solid rgba(234,88,12,0.25); }
+    .acc-gp .card-badge, .acc-gp .card-icon-wrap { background: rgba(234,88,12,0.15); color: #9A3E0A; }
+    .acc-gp .card-btn { background: rgba(234,88,12,0.1); color: #9A3E0A; border-color: rgba(234,88,12,0.32); }
+    .acc-kulit { background: rgba(155,109,220,0.1); border: 0.5px solid rgba(155,109,220,0.22); }
+    .acc-kulit .card-badge, .acc-kulit .card-icon-wrap { background: rgba(155,109,220,0.15); color: #4A1D8A; }
+    .acc-kulit .card-btn { background: rgba(155,109,220,0.1); color: #4A1D8A; border-color: rgba(155,109,220,0.3); }
+    .acc-nk   { background: rgba(99,102,241,0.1);  border: 0.5px solid rgba(99,102,241,0.24); }
+    .acc-nk .card-badge, .acc-nk .card-icon-wrap { background: rgba(99,102,241,0.15); color: #3730A3; }
+    .acc-nk .card-btn { background: rgba(99,102,241,0.1); color: #3730A3; border-color: rgba(99,102,241,0.32); }
+    .acc-logo { background: rgba(13,148,136,0.1);  border: 0.5px solid rgba(13,148,136,0.24); }
+    .acc-logo .card-badge, .acc-logo .card-icon-wrap { background: rgba(13,148,136,0.15); color: #0F5D54; }
+    .acc-logo .card-btn { background: rgba(13,148,136,0.1); color: #0F5D54; border-color: rgba(13,148,136,0.32); }
+
+    /* FOOTER */
+    .footer-zone { background: #0A1A1D; padding: 16px 18px 28px; }
+    .live-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .live-txt { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+    /* FORM ELEMENTS */
+    .form-header-pill { display: flex; align-items: center; gap: 8px; background: rgba(155,109,220,0.12); border: 0.5px solid rgba(155,109,220,0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 18px; }
+    .form-header-pill i { color: #9B6DDC; font-size: 20px; flex-shrink: 0; }
+    .form-header-pill-txt { font-size: 13px; font-weight: 600; color: #4A1D8A; }
+    .form-header-pill-sub { font-size: 11px; color: #999; margin-top: 1px; }
+    .field-label { font-size: 10px; font-weight: 600; color: #888; letter-spacing: 1.5px; text-transform: uppercase; display: block; }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .status-pill { font-size: 9px; font-weight: 500; padding: 2px 8px; border-radius: 99px; letter-spacing: 0.5px; white-space: nowrap; }
+    .load-time-note { font-size: 10px; color: #aaa; text-align: right; margin: 3px 0 10px; min-height: 12px; }
+    .load-error-row { display: none; align-items: center; justify-content: space-between; gap: 8px; background: rgba(220,53,69,0.08); border: 1px solid rgba(220,53,69,0.25); border-radius: 10px; padding: 8px 10px; margin: 3px 0 10px; font-size: 11px; color: #7D1B1B; line-height: 1.4; }
+    .retry-btn { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(220,53,69,0.4); background: white; color: #DC3545; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .demo-banner { background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.35); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11.5px; color: #7A5700; line-height: 1.5; }
+    .demo-banner b { display: block; font-size: 11px; letter-spacing: 0.5px; margin-bottom: 2px; }
+
+    .wip-toggle { display: flex; gap: 6px; margin-bottom: 14px; }
+    .wip-toggle-btn { flex: 1; padding: 10px 4px; border-radius: 12px; border: 1.5px solid #E0E2E0; background: white; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .wip-toggle-btn.active { background: linear-gradient(135deg, #9B6DDC, #C084FC); color: white; border-color: transparent; }
+    .wip-filter { display: flex; gap: 8px; margin-bottom: 10px; }
+    .wip-filter-input { flex: 1; min-width: 0; padding: 9px 12px; border-radius: 10px; border: 1.5px solid #E0E2E0; background: white; font-size: 12px; color: #111; font-family: inherit; outline: none; appearance: none; -webkit-appearance: none; }
+    .wip-filter-input:focus { border-color: #9B6DDC; }
+    .wip-empty { text-align: center; padding: 24px; color: #aaa; font-size: 13px; }
+
+    .today-stats { display: flex; gap: 8px; margin-bottom: 10px; }
+    .today-stat-chip { flex: 1; min-width: 0; background: #F7F7F5; border: 1px solid #E0E2E0; border-radius: 10px; padding: 8px 6px; text-align: center; }
+    .today-stat-value { display: block; font-size: 15px; font-weight: 700; color: #111; }
+    .today-stat-label { display: block; font-size: 9px; color: #666; margin-top: 2px; line-height: 1.3; }
+    .today-tablewrap { border: 1px solid #E0E2E0; border-radius: 12px; overflow-x: auto; background: white; -webkit-overflow-scrolling: touch; }
+    .today-table { border-collapse: collapse; width: 100%; font-size: 11.5px; white-space: nowrap; }
+    .today-table th, .today-table td { padding: 8px 9px; text-align: left; border-bottom: 1px solid #E8E8E6; vertical-align: middle; }
+    .today-table tr:last-child td { border-bottom: none; }
+    .today-table th { font-size: 10px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.02em; background: rgba(0,0,0,0.02); }
+    .today-scroll-hint { font-size: 10.5px; color: #999; margin-top: 5px; }
+    .today-label { display: flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 12.5px; font-weight: 600; color: #444; }
+    .today-tabs { display: flex; gap: 6px; margin: 8px 0 10px; }
+    .today-tab-btn { flex: 1; padding: 9px 4px; border-radius: 10px; border: 1.5px solid #D8DAD8; background: white; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .today-tab-btn.active { background: #333A36; color: white; border-color: transparent; }
+
+    /* TABEL TRACKING */
+    .mk-table th.stage, .mk-table td.stage { text-align: center; min-width: 74px; }
+    .mk-table th.stage { color: #4A1D8A; background: rgba(155,109,220,0.08); }
+    .mk-table th.stage label { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+    .mk-table td.stage { background: rgba(155,109,220,0.03); }
+    .mk-table .col-no { font-weight: 700; color: #111; }
+    .mk-table .col-spo { font-weight: 700; color: #111; }
+    .mk-table .col-style { max-width: 150px; overflow: hidden; text-overflow: ellipsis; color: #555; }
+    .mk-table .col-size { color: #666; font-size: 10.5px; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+    .mk-check { width: 22px; height: 22px; accent-color: #9B6DDC; cursor: pointer; vertical-align: middle; }
+    .mk-check:disabled { cursor: not-allowed; opacity: 0.35; }
+    .mk-done { display: inline-block; font-size: 10.5px; font-weight: 700; color: #0A5C42; background: rgba(29,158,117,0.12); border-radius: 8px; padding: 3px 7px; line-height: 1.35; }
+    .mk-done small { font-weight: 500; font-size: 10px; }
+    .mk-table tr.has-check td { background: rgba(155,109,220,0.07); }
+
+    .btn-submit { width: 100%; padding: 15px; border-radius: 14px; margin-top: 14px; background: linear-gradient(135deg, #9B6DDC, #7C3AED); color: white; font-size: 15px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(155,109,220,0.35); font-family: inherit; }
+    .btn-submit:active { opacity: 0.85; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-note { font-size: 10.5px; color: #999; text-align: center; margin-top: 6px; }
+
+    /* KARTU STATUS MEMO */
+    .wip-list { display: flex; flex-direction: column; gap: 8px; }
+    .wip-item { background: white; border: 1px solid #E0E2E0; border-radius: 12px; padding: 12px 14px; }
+    .wip-item-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .wip-item-spo { font-size: 14px; font-weight: 700; color: #111; }
+    .wip-item-pill { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+    .pill-done { color: #0A5C42; background: rgba(29,158,117,0.12); }
+    .pill-wait { color: #4A1D8A; background: rgba(155,109,220,0.14); }
+    .wip-item-style { font-size: 12px; color: #666; line-height: 1.4; margin-bottom: 4px; word-break: break-word; }
+    .wip-item-meta { font-size: 10.5px; color: #999; margin-bottom: 2px; word-break: break-word; }
+    .mk-steps { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 4px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #E8E8E6; }
+    .mk-step { text-align: center; font-size: 9px; color: #999; line-height: 1.3; }
+    .mk-step-dot { width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; background: #ECEDEC; color: #aaa; }
+    .mk-step.done .mk-step-dot { background: #1D9E75; color: #fff; }
+    .mk-step.done { color: #0A5C42; }
+    .mk-step.next .mk-step-dot { background: rgba(155,109,220,0.15); color: #4A1D8A; border: 1.5px solid #9B6DDC; }
+    .mk-step.next { color: #4A1D8A; font-weight: 600; }
+    .mk-step-name { font-weight: 600; }
+    .mk-ket-btn { margin-top: 5px; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 600; color: #7C3AED; background: rgba(155,109,220,0.1); border: 1px solid rgba(155,109,220,0.3); border-radius: 99px; padding: 3px 8px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .mk-ket-btn:active { background: rgba(155,109,220,0.22); }
+
+    /* POP UP KETERANGAN */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,26,29,0.6); z-index: 997; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay.show { display: flex; }
+    .modal-sheet { background: white; border-radius: 18px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 16px 16px 12px; border-bottom: 1px solid #EEE; }
+    .modal-title { font-size: 15px; font-weight: 700; color: #111; }
+    .modal-sub { font-size: 11.5px; color: #777; margin-top: 3px; line-height: 1.4; }
+    .modal-close { background: #F3F3F1; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; color: #666; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .modal-body { padding: 12px 16px 16px; overflow-y: auto; }
+    .modal-sheet, .modal-body { min-width: 0; }
+    .ket-card { border: 1px solid #E8E8E6; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+    .ket-card.total { background: rgba(155,109,220,0.07); border-color: rgba(155,109,220,0.25); }
+    .ket-grid { display: grid; grid-template-columns: 0.8fr 1fr 1fr 1fr; gap: 6px; }
+    .ket-k { font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .ket-v { font-size: 13px; font-weight: 700; color: #111; font-variant-numeric: tabular-nums; }
+    .ket-text { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #E8E8E6; font-size: 12px; color: #444; line-height: 1.45; word-break: break-word; }
+    .ket-text .ket-k { display: block; margin-bottom: 2px; }
+
+    /* TOAST & LOADING */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s; max-width: 90vw; text-align: center; pointer-events: none; }
+    .toast.show { opacity: 1; }
+    .toast.success { background: #0A5C42; }
+    .toast.error { background: #7D1B1B; }
+    .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 998; }
+    .loading-overlay.show { display: flex; }
+    .loading-box { background: white; border-radius: 16px; padding: 24px 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .spinner { width: 36px; height: 36px; border: 3px solid #f0f0f0; border-top-color: #9B6DDC; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-txt { font-size: 13px; color: #555; font-weight: 500; }
+
+    @media (max-width: 420px) {
+      body { padding: 0; align-items: flex-start; }
+      .phone { border-radius: 0; min-height: 100vh; border: none; }
+      .header-zone { padding-top: max(16px, env(safe-area-inset-top)); }
+      .footer-zone { padding-bottom: max(28px, env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box"><div class="spinner"></div><div class="loading-txt" id="loadingTxt">Mengirim data...</div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- POP UP: Lihat keterangan memo (kolom I–M sheet MEMO KULIT) -->
+<div class="modal-overlay" id="mkKetModal" onclick="if(event.target===this)closeMkKet()">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="mkKetTitle">Keterangan</div>
+        <div class="modal-sub" id="mkKetSub"></div>
+      </div>
+      <button type="button" class="modal-close" onclick="closeMkKet()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="mkKetBody"></div>
+  </div>
+</div>
+
+<div class="phone">
+
+  <!-- ==================== HOME: GANTI POLA AREA ==================== -->
+  <div class="page active" id="page-home">
+    <div class="header-zone"></div>
+    <div class="area-label">
+      <div class="area-label-text">GANTI POLA AREA</div>
+      <div class="area-divider"></div>
+    </div>
+    <div class="crumb">MOBILE APPS GANTI POLA AREA</div>
+
+    <div class="content-zone">
+      <div class="section-lbl">Pilih Menu</div>
+      <div class="cards">
+
+        <div class="card acc-gp card-placeholder" onclick="comingSoon('Ganti Pola')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Input</span><div class="card-icon-wrap"><i class="ti ti-replace"></i></div></div>
+            <div class="card-title">Ganti Pola</div>
+            <div class="card-desc">Segera hadir</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-clock"></i> Belum tersedia</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+
+        <div class="card acc-kulit" onclick="goTo('page-memo-kulit')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-route"></i></div></div>
+            <div class="card-title">Tracking Memo Kulit</div>
+            <div class="card-desc">Checklist progres memo kulit: 3R → PPIC → Gudang Kulit → Terima Material → Beres Cutting</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-list-check"></i> Tracking &amp; status</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+
+        <div class="card acc-nk card-placeholder" onclick="comingSoon('Tracking Memo Non Kulit/Non Logo')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-route"></i></div></div>
+            <div class="card-title">Tracking Memo Non Kulit/Non Logo</div>
+            <div class="card-desc">Segera hadir</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-clock"></i> Belum tersedia</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+
+        <div class="card acc-logo card-placeholder" onclick="comingSoon('Tracking Memo Logo')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-route"></i></div></div>
+            <div class="card-title">Tracking Memo Logo</div>
+            <div class="card-desc">Segera hadir</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-clock"></i> Belum tersedia</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-zone"></div>
+  </div>
+
+  <!-- ==================== TRACKING MEMO KULIT ==================== -->
+  <div class="page" id="page-memo-kulit">
+    <div class="header-zone" data-back="page-home"></div>
+    <div class="area-label">
+      <div class="area-label-text" style="font-size:17px;letter-spacing:2px">TRACKING MEMO KULIT</div>
+      <div class="area-divider" style="background:linear-gradient(90deg,#9B6DDC,#C084FC)"></div>
+    </div>
+    <div class="crumb">GANTI POLA AREA › TRACKING MEMO KULIT</div>
+
+    <div class="form-zone">
+      <div class="form-header-pill">
+        <i class="ti ti-route"></i>
+        <div>
+          <div class="form-header-pill-txt">Tracking Memo Kulit</div>
+          <div class="form-header-pill-sub">Ganti Pola Area — data dari sheet MEMO KULIT</div>
+        </div>
+      </div>
+
+      <div class="demo-banner" id="mkDemoBanner" style="display:none">
+        <b>MODE DEMO</b>
+        URL Apps Script (GAS_MEMO_URL) belum diisi, jadi yang tampil adalah contoh data dan tidak ada yang terkirim ke sheet.
+      </div>
+
+      <div class="status-row">
+        <label class="field-label">Data Memo (sheet MEMO KULIT)</label>
+        <span class="status-pill" id="mkStatus">⏳ Memuat...</span>
+      </div>
+      <div class="load-time-note" id="mkLoadTime"></div>
+      <div class="load-error-row" id="mkErrorRow">
+        <span id="mkErrorMsg"></span>
+        <button type="button" class="retry-btn" onclick="loadMk()"><i class="ti ti-refresh"></i> Coba Lagi</button>
+      </div>
+
+      <div class="wip-toggle">
+        <button type="button" class="wip-toggle-btn active" id="mkTabTrack" onclick="showMkView('track')"><i class="ti ti-checkbox"></i> Tracking</button>
+        <button type="button" class="wip-toggle-btn" id="mkTabStatus" onclick="showMkView('status')"><i class="ti ti-chart-dots"></i> Status Memo</button>
+      </div>
+
+      <!-- VIEW: TRACKING (checklist) -->
+      <div id="mkViewTrack">
+        <div class="wip-filter">
+          <input type="text" class="wip-filter-input" id="mkFilterSpo" placeholder="Cari No / SPO / Style..." oninput="renderMkTable()">
+          <select class="wip-filter-input" id="mkFilterStage" onchange="renderMkTable()">
+            <option value="">Semua tahap</option>
+          </select>
+        </div>
+        <div id="mkStats"></div>
+        <div id="mkTableWrap"><div class="wip-empty">Memuat data...</div></div>
+        <div class="today-scroll-hint">← geser tabel untuk lihat semua tahap → · Centang tahap yang sudah terpenuhi</div>
+
+        <button type="button" class="btn-submit" id="mkBtnSubmit" onclick="submitMk()">
+          <i class="ti ti-send"></i> Kirim
+        </button>
+        <div class="submit-note">Tanggal &amp; jam setiap tahap yang dicentang diisi otomatis saat data terkirim.</div>
+
+        <div class="today-label"><i class="ti ti-list-check"></i> Cek Data Terkirim</div>
+        <div class="today-tabs">
+          <button type="button" class="today-tab-btn active" id="mkSentTab0" onclick="setMkSentDay(0)">Hari Ini</button>
+          <button type="button" class="today-tab-btn" id="mkSentTab1" onclick="setMkSentDay(1)">Kemarin</button>
+        </div>
+        <div id="mkSentList"><div class="wip-empty">Memuat...</div></div>
+      </div>
+
+      <!-- VIEW: STATUS MEMO (monitoring) -->
+      <div id="mkViewStatus" style="display:none">
+        <div class="wip-filter">
+          <input type="text" class="wip-filter-input" id="mkStFilterSpo" placeholder="Cari No / SPO / Style..." oninput="renderMkStatus()">
+          <select class="wip-filter-input" id="mkStFilterDone" onchange="renderMkStatus()">
+            <option value="wait">Belum selesai</option>
+            <option value="done">Sudah selesai</option>
+            <option value="">Semua memo</option>
+          </select>
+        </div>
+        <div id="mkStStats"></div>
+        <div class="wip-list" id="mkStatusList"><div class="wip-empty">Memuat data...</div></div>
+      </div>
+    </div>
+    <div class="footer-zone"></div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+  // ============================================================
+  //  CONFIG — isi dengan URL Web App (berakhiran /exec) hasil deploy Code.gs.
+  //  Selama kosong, menu Tracking Memo Kulit berjalan dalam MODE DEMO.
+  // ============================================================
+  var GAS_MEMO_URL = 'https://script.google.com/macros/s/AKfycbzqEsXCZ4rszh5uhlRiVgflhVcg4hX6QZnr7nHPOAbLTG__5uVpZmRFYOXTPO0Jvhk/exec';
+  // ============================================================
+
+  var STAGES = ['3R', 'PPIC', 'Gudang Kulit', 'Terima Material', 'Beres Cutting'];
+  var STAGES_SHORT = ['3R', 'PPIC', 'Gudang', 'Terima', 'Beres'];
+
+  // ---- UTIL ----
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch];
+    });
+  }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function fmtDate(d) { return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function fmtTime(d) { return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
+
+  function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (type || '');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function() { t.className = 'toast'; }, type === 'error' ? 5000 : 3000);
+  }
+  function showLoading(show, txt) {
+    document.getElementById('loadingTxt').textContent = txt || 'Mengirim data...';
+    document.getElementById('loadingOverlay').classList.toggle('show', show);
+  }
+  function comingSoon(nama) { showToast('⏳ Menu "' + nama + '" belum tersedia — segera hadir', 'error'); }
+
+  // ---- HEADER & FOOTER (dibuat sekali, dipakai semua halaman) ----
+  function buildChrome() {
+    document.querySelectorAll('.header-zone').forEach(function(h) {
+      var back = h.getAttribute('data-back');
+      h.innerHTML = '<div class="status-bar"><span>PT. ASI</span><span class="waktu-el">--:--</span></div>'
+        + '<div class="logo-wrap"><div class="logo-box">L</div><div class="logo-text">LITRA-ASI</div></div>'
+        + '<div class="tagline">Leading Industrial Transformation</div>'
+        + '<div class="subtitle">Mobile Apps Ganti Pola Area</div>'
+        + '<div class="date-pill"><span class="pill"><i class="ti ti-calendar" style="font-size:13px"></i> <span class="tgl-el">Memuat...</span></span></div>'
+        + (back ? '<div class="back-btn" onclick="goTo(\'' + back + '\')"><i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali</div>' : '');
+    });
+    document.querySelectorAll('.footer-zone').forEach(function(f) {
+      f.innerHTML = '<div class="live-row"><div class="live-dot"></div><div class="live-txt">Sistem aktif — PT. ASI Ganti Pola Area</div></div>';
+    });
+  }
+
+  function updateClock() {
+    var now = new Date();
+    var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    document.querySelectorAll('.waktu-el').forEach(function(el) { el.textContent = fmtTime(now); });
+    document.querySelectorAll('.tgl-el').forEach(function(el) {
+      el.textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    });
+  }
+
+  function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0, 0);
+    if (pageId === 'page-memo-kulit') initMk();
+  }
+
+  // ---- JSONP ----
+  var JSONP_TIMEOUT_MS = 40000;
+  function jsonp(url, callback) {
+    var cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
+    var settled = false;
+    var s = document.createElement('script');
+    function finish(err, data) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      delete window[cbName];
+      if (s.parentNode) s.parentNode.removeChild(s);
+      callback(err, data);
+    }
+    var timer = setTimeout(function() { var e = new Error('Timeout'); e.isTimeout = true; finish(e, null); }, JSONP_TIMEOUT_MS);
+    window[cbName] = function(data) { finish(null, data); };
+    s.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
+    s.onerror = function() { var e = new Error('Gagal'); e.isNetwork = true; finish(e, null); };
+    document.body.appendChild(s);
+  }
+  function errMessage(err, data) {
+    if (err) return err.isTimeout
+      ? 'Waktu habis (' + (JSONP_TIMEOUT_MS / 1000) + ' detik) — server kemungkinan sedang lambat. Coba lagi.'
+      : 'Gagal terhubung ke server — cek koneksi internet lalu coba lagi.';
+    if (data && data.status === 'error' && data.message) return 'Server menolak: ' + data.message;
+    return 'Gagal memuat data. Coba lagi.';
+  }
+
+  // ============================================================
+  //  TRACKING MEMO KULIT
+  // ============================================================
+  var mk = { memos: [], today: '', yesterday: '', checked: {}, visible: [], sentDay: 0, demo: false };
+
+  function initMk() {
+    var sel = document.getElementById('mkFilterStage');
+    if (sel.options.length === 1) {
+      STAGES.forEach(function(s, i) {
+        var o = document.createElement('option');
+        o.value = i; o.textContent = 'Menunggu ' + s;
+        sel.appendChild(o);
+      });
+    }
+    // Delegasi event checklist (dipasang sekali)
+    var wrap = document.getElementById('mkTableWrap');
+    if (!wrap._wired) {
+      wrap._wired = true;
+      wrap.addEventListener('change', onMkCheckChange);
+    }
+    loadMk();
+  }
+
+  // Data tracking selalu dimuat ulang tiap buka menu — supaya progres dari user lain langsung terlihat.
+  function loadMk() {
+    document.getElementById('mkErrorRow').style.display = 'none';
+    document.getElementById('mkLoadTime').textContent = '';
+    if (!GAS_MEMO_URL) {
+      mk.demo = true;
+      document.getElementById('mkDemoBanner').style.display = 'block';
+      if (!mk.memos.length) mk.memos = demoMemos();
+      mk.today = fmtDate(new Date());
+      mk.yesterday = fmtDate(new Date(Date.now() - 86400000));
+      setMkStatus('ok');
+      afterMkLoad();
+      return;
+    }
+    setMkStatus('loading');
+    var t0 = Date.now();
+    jsonp(GAS_MEMO_URL + '?type=memo_kulit_data', function(err, data) {
+      document.getElementById('mkLoadTime').textContent = 'Waktu memuat: ' + ((Date.now() - t0) / 1000).toFixed(1) + ' detik';
+      if (err || !data || data.status !== 'ok') {
+        setMkStatus('error');
+        document.getElementById('mkErrorMsg').textContent = errMessage(err, data);
+        document.getElementById('mkErrorRow').style.display = 'flex';
+        document.getElementById('mkTableWrap').innerHTML = '<div class="wip-empty">Data belum termuat.</div>';
+        return;
+      }
+      mk.memos = data.memos || [];
+      mk.today = data.today;
+      mk.yesterday = data.yesterday;
+      setMkStatus('ok');
+      afterMkLoad();
+    });
+  }
+
+  function afterMkLoad() {
+    // Buang centang untuk memo yang sudah tidak ada / tahapnya sudah terisi orang lain
+    Object.keys(mk.checked).forEach(function(row) {
+      var m = findMemo(row);
+      if (!m) { delete mk.checked[row]; return; }
+      Object.keys(mk.checked[row]).forEach(function(s) { if (m.stages[s].val) delete mk.checked[row][s]; });
+    });
+    renderMkTable();
+    renderMkStatus();
+    renderMkSent();
+  }
+
+  function setMkStatus(state) {
+    var el = document.getElementById('mkStatus');
+    var pending = mk.memos.filter(function(m) { return !m.done; }).length;
+    if (state === 'loading') { el.textContent = '⏳ Memuat...'; el.style.background = 'rgba(155,109,220,0.15)'; el.style.color = '#4A1D8A'; }
+    else if (state === 'ok') { el.textContent = '✓ ' + pending + ' memo belum selesai'; el.style.background = 'rgba(29,158,117,0.15)'; el.style.color = '#0A5C42'; }
+    else { el.textContent = '✕ Gagal memuat data'; el.style.background = 'rgba(220,53,69,0.15)'; el.style.color = '#7D1B1B'; }
+  }
+
+  function findMemo(row) {
+    row = Number(row);
+    for (var i = 0; i < mk.memos.length; i++) if (mk.memos[i].row === row) return mk.memos[i];
+    return null;
+  }
+  function nextStage(m) {
+    for (var i = 0; i < m.stages.length; i++) if (!m.stages[i].val) return i;
+    return -1;
+  }
+  function isChecked(row, s) { return !!(mk.checked[row] && mk.checked[row][s]); }
+  function setChecked(row, s, on) {
+    if (on) { (mk.checked[row] = mk.checked[row] || {})[s] = true; }
+    else if (mk.checked[row]) { delete mk.checked[row][s]; if (!Object.keys(mk.checked[row]).length) delete mk.checked[row]; }
+  }
+  // Tahap s boleh dicentang kalau belum terisi & tahap sebelumnya sudah terisi ATAU ikut dicentang
+  function eligible(m, s) {
+    if (m.stages[s].val) return false;
+    return s === 0 || !!m.stages[s - 1].val || isChecked(m.row, s - 1);
+  }
+  function memoMatches(m, q) {
+    if (!q) return true;
+    return (m.no + ' ' + m.spo + ' ' + m.style).toLowerCase().indexOf(q) >= 0;
+  }
+  function sizeSummary(m) {
+    return m.sizes.map(function(s) { return s.size + ' ' + s.qty; }).join(', ');
+  }
+
+  // ---- TABEL CHECKLIST (hanya memo yang belum lengkap 5 tahap) ----
+  function stageCellHTML(m, s) {
+    var st = m.stages[s];
+    if (st.val) {
+      return '<span class="mk-done">' + esc(st.val) + (st.jam && st.jam !== st.val ? '<br><small>' + esc(st.jam) + '</small>' : '') + '</span>';
+    }
+    if (!eligible(m, s)) return '<input type="checkbox" class="mk-check" disabled title="' + esc(STAGES[s - 1]) + ' belum terpenuhi">';
+    return '<input type="checkbox" class="mk-check" data-row="' + m.row + '" data-stage="' + s + '"' + (isChecked(m.row, s) ? ' checked' : '') + '>';
+  }
+
+  function renderMkTable() {
+    var q = document.getElementById('mkFilterSpo').value.toLowerCase().trim();
+    var fStage = document.getElementById('mkFilterStage').value;
+    var wrap = document.getElementById('mkTableWrap');
+    var pendingAll = mk.memos.filter(function(m) { return !m.done; });
+    mk.visible = pendingAll.filter(function(m) {
+      if (!memoMatches(m, q)) return false;
+      if (fStage !== '' && nextStage(m) !== Number(fStage)) return false;
+      return true;
+    });
+    renderMkStats(pendingAll.length);
+    if (!pendingAll.length) { wrap.innerHTML = '<div class="wip-empty">✓ Semua memo kulit sudah selesai di-tracking.</div>'; return; }
+    if (!mk.visible.length) { wrap.innerHTML = '<div class="wip-empty">Tidak ada memo yang cocok dengan filter.</div>'; return; }
+
+    var html = '<div class="today-tablewrap" id="mkScroll"><table class="today-table mk-table"><thead><tr>'
+      + '<th>Tanggal</th><th>SPO</th>';
+    STAGES.forEach(function(name, s) {
+      html += '<th class="stage"><label>' + esc(STAGES_SHORT[s]) + '<input type="checkbox" class="mk-check mk-all" data-stage="' + s + '" title="Centang semua ' + esc(name) + '"></label></th>';
+    });
+    html += '<th>Style</th><th>Material</th><th>Jenis</th><th>Warna</th><th>Kekurangan (SF)</th></tr></thead><tbody>';
+    mk.visible.forEach(function(m) {
+      html += '<tr id="mk-tr-' + m.row + '"' + (mk.checked[m.row] ? ' class="has-check"' : '') + '>'
+        + '<td>' + esc(m.tanggal) + '</td>'
+        + '<td class="col-spo">' + esc(m.spo)
+        + '<br><button type="button" class="mk-ket-btn" onclick="openMkKet(' + m.row + ')"><i class="ti ti-file-description"></i> Lihat keterangan</button></td>';
+      for (var s = 0; s < STAGES.length; s++) html += '<td class="stage" id="mk-c-' + m.row + '-' + s + '">' + stageCellHTML(m, s) + '</td>';
+      html += '<td class="col-style" title="' + esc(m.style) + '">' + esc(m.style) + '</td>'
+        + '<td>' + esc(m.material) + '</td>'
+        + '<td class="col-style" title="' + esc(m.jenis) + '">' + esc(m.jenis) + '</td>'
+        + '<td class="col-style" title="' + esc(m.warna) + '">' + esc(m.warna) + '</td>'
+        + '<td>' + esc(m.kekurangan) + '</td>'
+        + '</tr>';
+    });
+    html += '</tbody></table></div>';
+    var oldScroll = document.getElementById('mkScroll');
+    var keepLeft = oldScroll ? oldScroll.scrollLeft : 0;
+    wrap.innerHTML = html;
+    document.getElementById('mkScroll').scrollLeft = keepLeft;
+    syncAllHeaders();
+  }
+
+  function refreshRow(m) {
+    for (var s = 0; s < STAGES.length; s++) {
+      var td = document.getElementById('mk-c-' + m.row + '-' + s);
+      if (td) td.innerHTML = stageCellHTML(m, s);
+    }
+    var tr = document.getElementById('mk-tr-' + m.row);
+    if (tr) tr.classList.toggle('has-check', !!mk.checked[m.row]);
+  }
+
+  // Uncheck tahap s → tahap sesudahnya yang ikut dicentang jadi tidak valid, ikut dilepas
+  function uncheckCascade(m, s) {
+    for (var k = s; k < STAGES.length; k++) {
+      if (k > s && !isChecked(m.row, k)) break;
+      setChecked(m.row, k, false);
+    }
+  }
+
+  function onMkCheckChange(e) {
+    var cb = e.target;
+    if (!cb.classList.contains('mk-check')) return;
+    var s = Number(cb.getAttribute('data-stage'));
+    if (cb.classList.contains('mk-all')) {
+      mk.visible.forEach(function(m) {
+        if (cb.checked) { if (eligible(m, s)) setChecked(m.row, s, true); }
+        else if (isChecked(m.row, s)) uncheckCascade(m, s);
+        refreshRow(m);
+      });
+    } else {
+      var m = findMemo(cb.getAttribute('data-row'));
+      if (!m) return;
+      if (cb.checked) setChecked(m.row, s, true); else uncheckCascade(m, s);
+      refreshRow(m);
+    }
+    syncAllHeaders();
+    renderMkStats(mk.memos.filter(function(x) { return !x.done; }).length);
+  }
+
+  function syncAllHeaders() {
+    document.querySelectorAll('#mkTableWrap .mk-all').forEach(function(h) {
+      var s = Number(h.getAttribute('data-stage'));
+      var elig = 0, chk = 0;
+      mk.visible.forEach(function(m) {
+        if (isChecked(m.row, s)) { chk++; elig++; } else if (eligible(m, s)) elig++;
+      });
+      h.disabled = elig === 0;
+      h.checked = elig > 0 && chk === elig;
+      h.indeterminate = chk > 0 && chk < elig;
+    });
+  }
+
+  function countChecked() {
+    var n = 0;
+    Object.keys(mk.checked).forEach(function(r) { n += Object.keys(mk.checked[r]).length; });
+    return n;
+  }
+
+  function renderMkStats(pendingCount) {
+    var n = countChecked();
+    document.getElementById('mkStats').innerHTML = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + pendingCount + '</span><span class="today-stat-label">Memo Belum Selesai</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + mk.visible.length + '</span><span class="today-stat-label">Tampil (Filter)</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#7C3AED">' + n + '</span><span class="today-stat-label">Tahap Dicentang</span></div>'
+      + '</div>';
+    var btn = document.getElementById('mkBtnSubmit');
+    btn.innerHTML = '<i class="ti ti-send"></i> Kirim' + (n ? ' (' + n + ' tahap)' : '');
+  }
+
+  // ---- SUBMIT ----
+  function submitMk() {
+    var items = [];
+    var perStage = STAGES.map(function() { return 0; });
+    Object.keys(mk.checked).forEach(function(row) {
+      var m = findMemo(row);
+      if (!m) return;
+      var stages = Object.keys(mk.checked[row]).map(Number).sort(function(a, b) { return a - b; });
+      if (!stages.length) return;
+      stages.forEach(function(s) { perStage[s]++; });
+      items.push({ row: m.row, no: m.no, spo: m.spo, stages: stages });
+    });
+    if (!items.length) { showToast('⚠️ Centang minimal 1 tahap yang sudah terpenuhi', 'error'); return; }
+
+    var lines = STAGES.map(function(name, s) { return perStage[s] ? '• ' + name + ': ' + perStage[s] + ' memo' : null; }).filter(Boolean);
+    var ok = window.confirm('Kirim tracking untuk ' + items.length + ' memo?\n\n' + lines.join('\n')
+      + '\n\nTanggal & jam saat ini akan tercetak di kolom tahap yang dicentang.');
+    if (!ok) return;
+
+    if (mk.demo) {
+      var now = new Date();
+      items.forEach(function(it) {
+        var m = findMemo(it.row);
+        it.stages.forEach(function(s) { m.stages[s] = { val: fmtDate(now), jam: fmtTime(now) }; });
+        m.done = m.stages.every(function(st) { return st.val; });
+      });
+      mk.checked = {};
+      showToast('✓ (Demo) ' + countStages(items) + ' tahap ditandai — tidak tersimpan ke sheet', 'success');
+      afterMkLoad();
+      setMkStatus('ok');
+      return;
+    }
+
+    showLoading(true, 'Mengirim tracking...');
+    var url = GAS_MEMO_URL + '?type=save_memo_kulit_tracking&payload=' + encodeURIComponent(JSON.stringify({ items: items }));
+    jsonp(url, function(err, result) {
+      showLoading(false);
+      if (err) {
+        showToast('Gagal terima konfirmasi server. Data mungkin sudah tersimpan — cek "Cek Data Terkirim" sebelum kirim ulang!', 'error');
+        loadMk();
+        return;
+      }
+      if (!result || result.status !== 'ok') { showToast('Gagal: ' + (result && result.message ? result.message : 'Coba lagi'), 'error'); return; }
+      mk.checked = {};
+      if (result.skipped && result.skipped.length) {
+        showToast('✓ ' + result.updated + ' tahap tersimpan. ' + result.skipped.length + ' dilewati: ' + result.skipped.slice(0, 2).join('; '), 'error');
+      } else {
+        showToast('✓ ' + result.updated + ' tahap tersimpan (' + result.tanggal + ' ' + result.jam + ')', 'success');
+      }
+      setMkSentDay(0, true);
+      loadMk();
+    });
+  }
+  function countStages(items) { return items.reduce(function(n, it) { return n + it.stages.length; }, 0); }
+
+  // ---- CEK DATA TERKIRIM (dibaca dari tanggal yang tercetak di kolom tahap) ----
+  function setMkSentDay(day, noRender) {
+    mk.sentDay = day;
+    document.getElementById('mkSentTab0').classList.toggle('active', day === 0);
+    document.getElementById('mkSentTab1').classList.toggle('active', day === 1);
+    if (!noRender) renderMkSent();
+  }
+
+  function renderMkSent() {
+    var el = document.getElementById('mkSentList');
+    var target = mk.sentDay ? mk.yesterday : mk.today;
+    var dayLabel = mk.sentDay ? 'kemarin' : 'hari ini';
+    var list = [];
+    mk.memos.forEach(function(m) {
+      m.stages.forEach(function(st, s) {
+        if (st.val === target) list.push({ m: m, s: s, jam: st.jam });
+      });
+    });
+    if (!list.length) { el.innerHTML = '<div class="wip-empty">Belum ada tracking yang terkirim ' + dayLabel + ' (' + esc(target) + ').</div>'; return; }
+    list.sort(function(a, b) { return (b.jam || '').localeCompare(a.jam || '') || a.m.row - b.m.row; });
+    var memoSet = {};
+    list.forEach(function(x) { memoSet[x.m.row] = true; });
+    var html = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + Object.keys(memoSet).length + '</span><span class="today-stat-label">Jumlah Memo</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + list.length + '</span><span class="today-stat-label">Tahap Terkirim</span></div>'
+      + '</div><div class="today-tablewrap"><table class="today-table"><thead><tr>'
+      + '<th>Jam</th><th>No</th><th>SPO</th><th>Tahap</th><th>Style</th></tr></thead><tbody>';
+    list.forEach(function(x) {
+      html += '<tr><td>' + esc(x.jam) + '</td><td>' + esc(x.m.no) + '</td><td><b>' + esc(x.m.spo) + '</b></td>'
+        + '<td><span class="mk-done">' + esc(STAGES[x.s]) + '</span></td><td>' + esc(x.m.style) + '</td></tr>';
+    });
+    el.innerHTML = html + '</tbody></table></div>';
+  }
+
+  // ---- STATUS MEMO (monitoring semua memo) ----
+  var MK_STATUS_LIMIT = 100;
+  function renderMkStatus() {
+    var q = document.getElementById('mkStFilterSpo').value.toLowerCase().trim();
+    var fDone = document.getElementById('mkStFilterDone').value;
+    var list = mk.memos.filter(function(m) {
+      if (fDone === 'wait' && m.done) return false;
+      if (fDone === 'done' && !m.done) return false;
+      return memoMatches(m, q);
+    }).slice().sort(function(a, b) { return b.row - a.row; }); // terbaru dulu
+    var el = document.getElementById('mkStatusList');
+    var doneN = mk.memos.filter(function(m) { return m.done; }).length;
+    document.getElementById('mkStStats').innerHTML = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + mk.memos.length + '</span><span class="today-stat-label">Total Memo</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#0A5C42">' + doneN + '</span><span class="today-stat-label">Selesai</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#7C3AED">' + (mk.memos.length - doneN) + '</span><span class="today-stat-label">Belum Selesai</span></div>'
+      + '</div>';
+    if (!list.length) { el.innerHTML = '<div class="wip-empty">Tidak ada memo yang cocok.</div>'; return; }
+
+    var shown = list.slice(0, MK_STATUS_LIMIT);
+    var html = shown.map(function(m) {
+      var ns = nextStage(m);
+      var doneCount = m.stages.filter(function(st) { return st.val; }).length;
+      var steps = m.stages.map(function(st, s) {
+        var cls = st.val ? 'done' : (s === ns ? 'next' : '');
+        var icon = st.val ? '<i class="ti ti-check"></i>' : (s + 1);
+        var sub = st.val ? esc(st.val === 'FULL' ? 'FULL' : st.val.slice(0, 5)) + (st.jam && st.jam !== st.val ? '<br>' + esc(st.jam) : '') : (s === ns ? 'Menunggu' : '-');
+        return '<div class="mk-step ' + cls + '"><div class="mk-step-dot">' + icon + '</div><div class="mk-step-name">' + esc(STAGES_SHORT[s]) + '</div>' + sub + '</div>';
+      }).join('');
+      return '<div class="wip-item" id="mk-st-' + m.row + '">'
+        + '<div class="wip-item-top"><span class="wip-item-spo">#' + esc(m.no) + ' · ' + esc(m.spo) + '</span>'
+        + '<span class="wip-item-pill ' + (m.done ? 'pill-done">✓ Selesai' : 'pill-wait">' + doneCount + '/5 · ' + esc(STAGES[ns])) + '</span></div>'
+        + '<div class="wip-item-style">' + esc(m.style) + '</div>'
+        + '<div class="wip-item-meta">' + esc(m.tanggal) + (m.week ? ' · Week ' + esc(m.week) : '') + ' · Kekurangan ' + esc(m.kekurangan || '-') + ' SF</div>'
+        + '<div class="wip-item-meta">' + esc(m.material) + ' · ' + esc(m.jenis) + ' · ' + esc(m.warna) + '</div>'
+        + '<div class="mk-steps">' + steps + '</div>'
+        + '<button type="button" class="mk-ket-btn" style="margin-top:10px" onclick="openMkKet(' + m.row + ')"><i class="ti ti-file-description"></i> Lihat keterangan</button>'
+        + '</div>';
+    }).join('');
+    if (list.length > shown.length) html += '<div class="wip-empty">Menampilkan ' + shown.length + ' dari ' + list.length + ' memo — persempit pencarian untuk melihat lainnya.</div>';
+    el.innerHTML = html;
+  }
+
+  // ---- POP UP "Lihat keterangan": kolom I–M dari baris memo s/d 1 baris di atas memo berikutnya ----
+  function openMkKet(row) {
+    var m = findMemo(row);
+    if (!m) return;
+    document.getElementById('mkKetTitle').textContent = 'Memo #' + m.no + ' · SPO ' + m.spo;
+    document.getElementById('mkKetSub').textContent = m.tanggal + ' · ' + m.style + ' · Kekurangan ' + (m.kekurangan || '-') + ' SF';
+    var body = document.getElementById('mkKetBody');
+    if (!m.sizes.length) { body.innerHTML = '<div class="wip-empty">Tidak ada data keterangan.</div>'; openModal(); return; }
+    var totQty = 0, totCons = 0;
+    function cell(k, v) { return '<div><div class="ket-k">' + k + '</div><div class="ket-v">' + esc(v === '' || v == null ? '-' : v) + '</div></div>'; }
+    var cards = m.sizes.map(function(sz) {
+      totQty += parseFloat(sz.qty) || 0;
+      totCons += parseFloat(sz.totalCons) || 0;
+      return '<div class="ket-card"><div class="ket-grid">'
+        + cell('Size', sz.size) + cell('Qty Size', sz.qty) + cell('Cons Size', sz.cons) + cell('Total Cons', sz.totalCons)
+        + '</div>' + (sz.ket ? '<div class="ket-text"><span class="ket-k">Keterangan</span>' + esc(sz.ket) + '</div>' : '') + '</div>';
+    }).join('');
+    body.innerHTML = cards
+      + '<div class="ket-card total"><div class="ket-grid">'
+      + cell('Total', m.sizes.length + ' size') + cell('Qty Size', Math.round(totQty * 100) / 100) + cell('', '') + cell('Total Cons', Math.round(totCons * 100) / 100)
+      + '</div></div>';
+    openModal();
+  }
+  function openModal() { document.getElementById('mkKetModal').classList.add('show'); }
+  function closeMkKet() { document.getElementById('mkKetModal').classList.remove('show'); }
+
+  function showMkView(which) {
+    document.getElementById('mkViewTrack').style.display  = which === 'track'  ? 'block' : 'none';
+    document.getElementById('mkViewStatus').style.display = which === 'status' ? 'block' : 'none';
+    document.getElementById('mkTabTrack').classList.toggle('active', which === 'track');
+    document.getElementById('mkTabStatus').classList.toggle('active', which === 'status');
+  }
+
+  // ---- DATA CONTOH untuk MODE DEMO (diambil dari memo yang belum ter-tracking di sheet) ----
+  function demoMemos() {
+    function stg(n) { var a = []; for (var i = 0; i < 5; i++) a.push(i < n ? { val: 'FULL', jam: 'FULL' } : { val: '', jam: '' }); return a; }
+    function sz(size, qty, cons, totalCons, ket) { return { size: size, qty: qty, cons: cons, totalCons: totalCons, ket: ket || '' }; }
+    function memo(row, no, tgl, spo, style, jenis, warna, sf, week, sizes, done) {
+      return { row: row, no: no, tanggal: tgl, spo: spo, style: style, material: 'KULIT', jenis: jenis, warna: warna,
+        kekurangan: sf, ket: sizes[0].ket, week: week, sizes: sizes, stages: stg(done ? 5 : 0), done: !!done };
+    }
+    var DAWN = ['GOAT CABRETTA CD 0.45-0.60 PEACOCK C0', 'PEARL WHITE SSN (STAY SOFT NEW)'];
+    return [
+      memo(1540, '374', '28-Oct', '1814/26', 'TM26 STRATUS SOFT GLOVE', 'GOAT GOLF D 0.50-0.60 C0', 'OFF WHITE', '16.75', '44', [
+        sz('M', '21', '0.73', '15.33', 'GANTI REJECT K08'),
+        sz('ML', '2', '0.73', '1.46', 'POLA BERGARIS,KOTOR KUNING,SOBEK,SALAH SERAT,BEKAS JARUM,MOLOR')], true),
+      memo(1542, '375', '29-Oct', '2179/26', 'Opti Grip 2PK 26 KR', 'SHEEP CABRETTA TR (D,E) 0.45-0.60 MM FORMALINE BUFF GRAIN SEMI WR TECLOCK', 'SNOW WHITE', '43.2', '44', [
+        sz('S', '49', '0.27', '13.23', 'GANTI REJECT F04'),
+        sz('M', '30', '0.27', '8.1', 'KOTOR KUNING,MENGELUPAS SELAIN KULIT,KEGUNTING,SEMPIT KARENA REPAIR,'),
+        sz('ML', '65', '0.27', '17.55', 'HOLPIN PECAH,KULIT MENGELUPAS,PENGAMBILAN JAHITAN TIDAK STABIL')]),
+      memo(1545, '376', '30-Oct', '2034/26', 'Dawn Patrol 2024 Men', DAWN[0], DAWN[1], '68.8', '44', [
+        sz('ML', '34', '0.62', '21.08', 'GANTI REJECT K09'),
+        sz('XL', '22', '0.62', '13.64', 'BOLONG,KOTOR KUNING,PENGAMBILAN JAHITAN TIDAK STABIL,HOLPIN PECAH,SEMPIT KARENA REPAIR,MOLOR,SALAH SERAT')]),
+      memo(1547, '377', '30-Oct', '1764/26', 'Dawn Patrol 2024 Men', DAWN[0], DAWN[1], '50.4', '44', [
+        sz('L', '41', '1.4', '57.4', 'GANTI REJECT K09 (RAPUH,HOLPIN DOUBLE,BEKAS JARUM,PENGAMBILAN JAHITAN TIDAK STABIL,KULIT MENGELUPAS,OUT OF TOLERANCE,SEMPIT KARENA REPAIR,KOTOR KUNING)')]),
+      memo(1548, '378', '31-Oct', '1780/26', 'Weather Spann 2027', 'GOAT CABRETTA TR 0.45-0.60 MM CHROME BUFF GRAIN WR PEACOCK C0', 'GLACIER WHITE', '22.6', '44', [
+        sz('M', '9', '0.19', '1.71', 'GANTI REJECT A01'),
+        sz('ML', '20', '0.19', '3.8', 'BEKAS JARUM,KULIT MENGELUPAS,KOTOR KUNING'),
+        sz('L', '69', '0.19', '13.11', ''),
+        sz('XL', '26', '0.19', '4.94', '')]),
+      memo(1552, '379', '2-Nov', '1814/26', 'TM26 STRATUS SOFT GLOVE', 'GOAT GOLF D 0.50-0.60 C0', 'OFF WHITE', '27.2', '45', [
+        sz('S', '2', '0.73', '1.46', 'GANTI REJECT K08'),
+        sz('M', '23', '0.73', '16.79', 'KULIT MENGELUPAS,SALAH SERAT,KARET KOTOR,PENGAMBILAN JAHITAN TIDAK STABIL,'),
+        sz('ML', '12', '0.73', '8.76', 'KOTOR KUNING,BEKAS JARUM')]),
+      memo(1555, '380', '2-Nov', '2034/26', 'Dawn Patrol 2024 Men', DAWN[0], DAWN[1], '18', '45', [
+        sz('ML', '11', '0.72', '7.92', 'GANTI REJECT K09'),
+        sz('XL', '4', '0.72', '2.88', 'KOTOR KUNING,SEMPIT KARENA REPAIR,KULIT MENGELUPAS')])
+    ];
+  }
+
+  // ---- START ----
+  buildChrome();
+  updateClock();
+  setInterval(updateClock, 30000);
+</script>
+</body>
+</html>
