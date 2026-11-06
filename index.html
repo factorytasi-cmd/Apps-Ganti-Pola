@@ -173,6 +173,17 @@
     .ket-text { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #E8E8E6; font-size: 12px; color: #444; line-height: 1.45; word-break: break-word; }
     .ket-text .ket-k { display: block; margin-bottom: 2px; }
 
+    /* GANTI POLA KULIT — aksen oranye */
+    #page-gp-kulit .mk-check { accent-color: #EA580C; }
+    #page-gp-kulit .mk-table th.stage { color: #9A3E0A; background: rgba(234,88,12,0.08); }
+    #page-gp-kulit .mk-table td.stage { background: rgba(234,88,12,0.03); }
+    #page-gp-kulit .mk-table tr.has-check td { background: rgba(234,88,12,0.07); }
+    #page-gp-kulit .wip-filter-input:focus { border-color: #EA580C; }
+    .gp-pic-input { width: 120px; padding: 7px 8px; border-radius: 8px; border: 1.5px solid #E0E2E0; font-size: 12px; font-family: inherit; color: #111; background: white; outline: none; }
+    .gp-pic-input:focus { border-color: #EA580C; }
+    .gp-pic-input:disabled { background: #F4F4F2; color: #aaa; }
+    .gp-pic-input.need { border-color: #DC3545; background: rgba(220,53,69,0.05); }
+
     /* TOAST & LOADING */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s; max-width: 90vw; text-align: center; pointer-events: none; }
     .toast.show { opacity: 1; }
@@ -229,12 +240,12 @@
       <div class="section-lbl">Pilih Menu</div>
       <div class="cards">
 
-        <div class="card acc-gp card-placeholder" onclick="comingSoon('Ganti Pola')">
+        <div class="card acc-gp" onclick="goTo('page-ganti-pola')">
           <div class="card-inner">
-            <div class="card-top"><span class="card-badge">Input</span><div class="card-icon-wrap"><i class="ti ti-replace"></i></div></div>
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-replace"></i></div></div>
             <div class="card-title">Ganti Pola</div>
-            <div class="card-desc">Segera hadir</div>
-            <div class="card-footer"><span class="card-hint"><i class="ti ti-clock"></i> Belum tersedia</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+            <div class="card-desc">Tracking permintaan ganti pola dari sewing: Ganti Pola Kulit &amp; Ganti Pola Sintetik</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-layers-subtract"></i> 2 menu</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
           </div>
         </div>
 
@@ -350,6 +361,95 @@
     <div class="footer-zone"></div>
   </div>
 
+  <!-- ==================== SUBMENU: GANTI POLA ==================== -->
+  <div class="page" id="page-ganti-pola">
+    <div class="header-zone" data-back="page-home"></div>
+    <div class="area-label">
+      <div class="area-label-text" style="font-size:18px;letter-spacing:2px">GANTI POLA</div>
+      <div class="area-divider" style="background:linear-gradient(90deg,#EA580C,#F97316)"></div>
+    </div>
+    <div class="crumb">GANTI POLA AREA › GANTI POLA</div>
+
+    <div class="content-zone">
+      <div class="section-lbl">Pilih Menu</div>
+      <div class="cards">
+        <div class="card acc-gp" onclick="goTo('page-gp-kulit')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-scissors"></i></div></div>
+            <div class="card-title">Ganti Pola Kulit</div>
+            <div class="card-desc">Checklist permintaan ganti pola kulit dari sewing: Sudah Cutting → Sudah Ambil</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-list-check"></i> GP Sewing Kulit 2026</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+        <div class="card acc-nk card-placeholder" onclick="comingSoon('Ganti Pola Sintetik')">
+          <div class="card-inner">
+            <div class="card-top"><span class="card-badge">Tracking</span><div class="card-icon-wrap"><i class="ti ti-cut"></i></div></div>
+            <div class="card-title">Ganti Pola Sintetik</div>
+            <div class="card-desc">Segera hadir</div>
+            <div class="card-footer"><span class="card-hint"><i class="ti ti-clock"></i> Belum tersedia</span><span class="card-btn">Buka <i class="ti ti-arrow-right"></i></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-zone"></div>
+  </div>
+
+  <!-- ==================== GANTI POLA KULIT (TRACKING) ==================== -->
+  <div class="page" id="page-gp-kulit">
+    <div class="header-zone" data-back="page-ganti-pola"></div>
+    <div class="area-label">
+      <div class="area-label-text" style="font-size:17px;letter-spacing:2px">GANTI POLA KULIT</div>
+      <div class="area-divider" style="background:linear-gradient(90deg,#EA580C,#F97316)"></div>
+    </div>
+    <div class="crumb">GANTI POLA AREA › GANTI POLA › KULIT</div>
+
+    <div class="form-zone">
+      <div class="form-header-pill" style="background:rgba(234,88,12,0.12);border-color:rgba(234,88,12,0.3)">
+        <i class="ti ti-scissors" style="color:#EA580C"></i>
+        <div>
+          <div class="form-header-pill-txt" style="color:#9A3E0A">Ganti Pola Kulit</div>
+          <div class="form-header-pill-sub">Data dari sheet GP SEWING KULIT - 2026</div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <label class="field-label">Data Permintaan Ganti Pola</label>
+        <span class="status-pill" id="gpStatus">⏳ Memuat...</span>
+      </div>
+      <div class="load-time-note" id="gpLoadTime"></div>
+      <div class="load-error-row" id="gpErrorRow">
+        <span id="gpErrorMsg"></span>
+        <button type="button" class="retry-btn" onclick="loadGp()"><i class="ti ti-refresh"></i> Coba Lagi</button>
+      </div>
+
+      <div class="wip-filter">
+        <input type="text" class="wip-filter-input" id="gpFilterQ" placeholder="Cari SPO / Style / Line / Leader..." oninput="renderGpTable()">
+        <select class="wip-filter-input" id="gpFilterStage" onchange="renderGpTable()">
+          <option value="">Semua tahap</option>
+          <option value="0">Menunggu Sudah Cutting</option>
+          <option value="1">Menunggu Sudah Ambil</option>
+        </select>
+      </div>
+      <div id="gpStats"></div>
+      <div id="gpTableWrap"><div class="wip-empty">Memuat data...</div></div>
+      <div class="today-scroll-hint">← geser tabel ke kanan untuk checklist → · PIC Ambil wajib diisi saat centang Sudah Ambil</div>
+      <datalist id="gpLeaderList"></datalist>
+
+      <button type="button" class="btn-submit" id="gpBtnSubmit" onclick="submitGp()" style="background:linear-gradient(135deg,#EA580C,#F97316);box-shadow:0 4px 16px rgba(234,88,12,0.3)">
+        <i class="ti ti-send"></i> Kirim
+      </button>
+      <div class="submit-note">Tanggal &amp; jam setiap tahap yang dicentang diisi otomatis saat data terkirim.</div>
+
+      <div class="today-label"><i class="ti ti-list-check"></i> Cek Data Terkirim</div>
+      <div class="today-tabs">
+        <button type="button" class="today-tab-btn active" id="gpSentTab0" onclick="setGpSentDay(0)">Hari Ini</button>
+        <button type="button" class="today-tab-btn" id="gpSentTab1" onclick="setGpSentDay(1)">Kemarin</button>
+      </div>
+      <div id="gpSentList"><div class="wip-empty">Memuat...</div></div>
+    </div>
+    <div class="footer-zone"></div>
+  </div>
+
 </div><!-- /phone -->
 
 <script>
@@ -417,6 +517,7 @@
     document.getElementById(pageId).classList.add('active');
     window.scrollTo(0, 0);
     if (pageId === 'page-memo-kulit') initMk();
+    if (pageId === 'page-gp-kulit') initGp();
   }
 
   // ---- JSONP ----
@@ -874,6 +975,310 @@
         sz('ML', '11', '0.72', '7.92', 'GANTI REJECT K09'),
         sz('XL', '4', '0.72', '2.88', 'KOTOR KUNING,SEMPIT KARENA REPAIR,KULIT MENGELUPAS')])
     ];
+  }
+
+  // ============================================================
+  //  GANTI POLA KULIT — tracking sheet "GP SEWING KULIT - 2026"
+  //  1 baris sheet = 1 permintaan. Tahap: Sudah Cutting → Sudah Ambil (+ PIC Ambil).
+  // ============================================================
+  var GP_STAGES = ['Sudah Cutting', 'Sudah Ambil'];
+  var gp = { items: [], leaders: [], today: '', yesterday: '', checked: {}, pic: {}, visible: [], sentDay: 0 };
+
+  function initGp() {
+    var wrap = document.getElementById('gpTableWrap');
+    if (!wrap._wired) {
+      wrap._wired = true;
+      wrap.addEventListener('change', onGpCheckChange);
+      wrap.addEventListener('input', onGpPicInput);
+    }
+    loadGp();
+  }
+
+  function loadGp() {
+    document.getElementById('gpErrorRow').style.display = 'none';
+    document.getElementById('gpLoadTime').textContent = '';
+    if (!GAS_MEMO_URL) {
+      setGpStatus('error');
+      document.getElementById('gpErrorMsg').textContent = 'URL Apps Script (GAS_MEMO_URL) belum diisi.';
+      document.getElementById('gpErrorRow').style.display = 'flex';
+      return;
+    }
+    setGpStatus('loading');
+    var t0 = Date.now();
+    jsonp(GAS_MEMO_URL + '?type=gp_kulit_data', function(err, data) {
+      document.getElementById('gpLoadTime').textContent = 'Waktu memuat: ' + ((Date.now() - t0) / 1000).toFixed(1) + ' detik';
+      if (err || !data || data.status !== 'ok') {
+        setGpStatus('error');
+        var msg = errMessage(err, data);
+        if (data && data.message && data.message.indexOf('tidak dikenal') >= 0) msg += ' — Code.gs versi terbaru belum di-deploy (Manage deployments → New version).';
+        document.getElementById('gpErrorMsg').textContent = msg;
+        document.getElementById('gpErrorRow').style.display = 'flex';
+        document.getElementById('gpTableWrap').innerHTML = '<div class="wip-empty">Data belum termuat.</div>';
+        return;
+      }
+      gp.items = data.items || [];
+      gp.leaders = data.leaders || [];
+      gp.today = data.today;
+      gp.yesterday = data.yesterday;
+      afterGpLoad();
+    });
+  }
+
+  function afterGpLoad() {
+    // Buang centang untuk baris yang sudah tidak ada / tahapnya sudah diisi orang lain
+    Object.keys(gp.checked).forEach(function(row) {
+      var it = findGp(row);
+      if (!it) { delete gp.checked[row]; return; }
+      Object.keys(gp.checked[row]).forEach(function(s) { if (it.stages[s].val) delete gp.checked[row][s]; });
+      if (!Object.keys(gp.checked[row]).length) delete gp.checked[row];
+    });
+    document.getElementById('gpLeaderList').innerHTML = gp.leaders.map(function(n) { return '<option value="' + esc(n) + '">'; }).join('');
+    setGpStatus('ok');
+    renderGpTable();
+    renderGpSent();
+  }
+
+  function setGpStatus(state) {
+    var el = document.getElementById('gpStatus');
+    var pending = gp.items.filter(function(it) { return !it.done; }).length;
+    if (state === 'loading') { el.textContent = '⏳ Memuat...'; el.style.background = 'rgba(234,88,12,0.12)'; el.style.color = '#9A3E0A'; }
+    else if (state === 'ok') { el.textContent = '✓ ' + pending + ' permintaan belum selesai'; el.style.background = 'rgba(29,158,117,0.15)'; el.style.color = '#0A5C42'; }
+    else { el.textContent = '✕ Gagal memuat data'; el.style.background = 'rgba(220,53,69,0.15)'; el.style.color = '#7D1B1B'; }
+  }
+
+  function findGp(row) {
+    row = Number(row);
+    for (var i = 0; i < gp.items.length; i++) if (gp.items[i].row === row) return gp.items[i];
+    return null;
+  }
+  function gpNext(it) { for (var i = 0; i < it.stages.length; i++) if (!it.stages[i].val) return i; return -1; }
+  function gpIsChecked(row, s) { return !!(gp.checked[row] && gp.checked[row][s]); }
+  function gpSetChecked(row, s, on) {
+    if (on) { (gp.checked[row] = gp.checked[row] || {})[s] = true; }
+    else if (gp.checked[row]) { delete gp.checked[row][s]; if (!Object.keys(gp.checked[row]).length) delete gp.checked[row]; }
+  }
+  function gpEligible(it, s) {
+    if (it.stages[s].val) return false;
+    return s === 0 || !!it.stages[s - 1].val || gpIsChecked(it.row, s - 1);
+  }
+  function gpPicValue(it) { return gp.pic[it.row] != null ? gp.pic[it.row] : it.leader; }
+
+  function gpStageCellHTML(it, s) {
+    var st = it.stages[s];
+    if (st.val) return '<span class="mk-done">' + esc(st.val) + (st.jam && st.jam !== st.val ? '<br><small>' + esc(st.jam) + '</small>' : '') + '</span>';
+    if (!gpEligible(it, s)) return '<input type="checkbox" class="mk-check" disabled title="' + esc(GP_STAGES[s - 1]) + ' belum terisi">';
+    return '<input type="checkbox" class="mk-check" data-row="' + it.row + '" data-stage="' + s + '"' + (gpIsChecked(it.row, s) ? ' checked' : '') + '>';
+  }
+
+  // PIC Ambil: terisi otomatis nama Leader baris itu, bisa diubah, saran dari daftar Leader di sheet.
+  // Aktif hanya kalau Sudah Ambil dicentang; kalau Sudah Ambil sudah terisi di sheet, tampil sebagai teks.
+  function gpPicCellHTML(it) {
+    if (it.stages[1].val) return esc(it.pic || '-');
+    var on = gpIsChecked(it.row, 1);
+    var v = gpPicValue(it);
+    return '<input type="text" class="gp-pic-input' + (on && !String(v).trim() ? ' need' : '') + '" list="gpLeaderList" data-row="' + it.row + '" value="' + esc(v) + '"'
+      + (on ? '' : ' disabled') + ' placeholder="Nama PIC" autocomplete="off">';
+  }
+
+  function renderGpTable() {
+    var q = document.getElementById('gpFilterQ').value.toLowerCase().trim();
+    var fStage = document.getElementById('gpFilterStage').value;
+    var wrap = document.getElementById('gpTableWrap');
+    var pendingAll = gp.items.filter(function(it) { return !it.done; });
+    gp.visible = pendingAll.filter(function(it) {
+      if (q && (it.spo + ' ' + it.style + ' ' + it.line + ' ' + it.leader + ' ' + it.size + ' ' + it.pola).toLowerCase().indexOf(q) < 0) return false;
+      if (fStage !== '' && gpNext(it) !== Number(fStage)) return false;
+      return true;
+    });
+    renderGpStats(pendingAll.length);
+    if (!pendingAll.length) { wrap.innerHTML = '<div class="wip-empty">✓ Semua permintaan ganti pola kulit sudah selesai.</div>'; return; }
+    if (!gp.visible.length) { wrap.innerHTML = '<div class="wip-empty">Tidak ada permintaan yang cocok dengan filter.</div>'; return; }
+
+    var html = '<div class="today-tablewrap" id="gpScroll"><table class="today-table mk-table"><thead><tr>'
+      + '<th>Tanggal</th><th>Line</th><th>Leader</th><th>Foreman</th><th>SPO</th><th>Style</th><th>Size</th><th>Pola</th><th>Material</th><th>Qty</th>';
+    GP_STAGES.forEach(function(name, s) {
+      html += '<th class="stage"><label>' + esc(name) + '<input type="checkbox" class="mk-check mk-all" data-stage="' + s + '" title="Centang semua ' + esc(name) + '"></label></th>';
+    });
+    html += '<th>PIC Ambil</th></tr></thead><tbody>';
+    gp.visible.forEach(function(it) {
+      html += '<tr id="gp-tr-' + it.row + '"' + (gp.checked[it.row] ? ' class="has-check"' : '') + '>'
+        + '<td>' + esc(it.tanggal) + '</td>'
+        + '<td>' + esc(it.line) + '</td>'
+        + '<td>' + esc(it.leader) + '</td>'
+        + '<td>' + esc(it.foreman) + '</td>'
+        + '<td class="col-spo">' + esc(it.spo) + '</td>'
+        + '<td class="col-style" title="' + esc(it.style) + '">' + esc(it.style) + '</td>'
+        + '<td>' + esc(it.size) + '</td>'
+        + '<td>' + esc(it.pola) + '</td>'
+        + '<td class="col-style" title="' + esc(it.material) + '">' + esc(it.material) + '</td>'
+        + '<td><b>' + esc(it.qty) + '</b></td>';
+      for (var s = 0; s < GP_STAGES.length; s++) html += '<td class="stage" id="gp-c-' + it.row + '-' + s + '">' + gpStageCellHTML(it, s) + '</td>';
+      html += '<td id="gp-p-' + it.row + '">' + gpPicCellHTML(it) + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    var old = document.getElementById('gpScroll');
+    var keepLeft = old ? old.scrollLeft : 0;
+    wrap.innerHTML = html;
+    document.getElementById('gpScroll').scrollLeft = keepLeft;
+    syncGpHeaders();
+  }
+
+  function refreshGpRow(it) {
+    for (var s = 0; s < GP_STAGES.length; s++) {
+      var td = document.getElementById('gp-c-' + it.row + '-' + s);
+      if (td) td.innerHTML = gpStageCellHTML(it, s);
+    }
+    var pc = document.getElementById('gp-p-' + it.row);
+    if (pc) pc.innerHTML = gpPicCellHTML(it);
+    var tr = document.getElementById('gp-tr-' + it.row);
+    if (tr) tr.classList.toggle('has-check', !!gp.checked[it.row]);
+  }
+
+  function gpUncheckCascade(it, s) {
+    for (var k = s; k < GP_STAGES.length; k++) {
+      if (k > s && !gpIsChecked(it.row, k)) break;
+      gpSetChecked(it.row, k, false);
+    }
+  }
+
+  function onGpCheckChange(e) {
+    var cb = e.target;
+    if (!cb.classList.contains('mk-check')) return;
+    var s = Number(cb.getAttribute('data-stage'));
+    if (cb.classList.contains('mk-all')) {
+      gp.visible.forEach(function(it) {
+        if (cb.checked) { if (gpEligible(it, s)) gpSetChecked(it.row, s, true); }
+        else if (gpIsChecked(it.row, s)) gpUncheckCascade(it, s);
+        refreshGpRow(it);
+      });
+    } else {
+      var it = findGp(cb.getAttribute('data-row'));
+      if (!it) return;
+      if (cb.checked) gpSetChecked(it.row, s, true); else gpUncheckCascade(it, s);
+      refreshGpRow(it);
+    }
+    syncGpHeaders();
+    renderGpStats(gp.items.filter(function(x) { return !x.done; }).length);
+  }
+
+  function onGpPicInput(e) {
+    var inp = e.target;
+    if (!inp.classList.contains('gp-pic-input')) return;
+    gp.pic[inp.getAttribute('data-row')] = inp.value;
+    inp.classList.toggle('need', !inp.value.trim());
+  }
+
+  function syncGpHeaders() {
+    document.querySelectorAll('#gpTableWrap .mk-all').forEach(function(h) {
+      var s = Number(h.getAttribute('data-stage'));
+      var elig = 0, chk = 0;
+      gp.visible.forEach(function(it) {
+        if (gpIsChecked(it.row, s)) { chk++; elig++; } else if (gpEligible(it, s)) elig++;
+      });
+      h.disabled = elig === 0;
+      h.checked = elig > 0 && chk === elig;
+      h.indeterminate = chk > 0 && chk < elig;
+    });
+  }
+
+  function gpCountChecked() {
+    var n = 0;
+    Object.keys(gp.checked).forEach(function(r) { n += Object.keys(gp.checked[r]).length; });
+    return n;
+  }
+
+  function renderGpStats(pendingCount) {
+    var n = gpCountChecked();
+    document.getElementById('gpStats').innerHTML = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + pendingCount + '</span><span class="today-stat-label">Belum Selesai</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + gp.visible.length + '</span><span class="today-stat-label">Tampil (Filter)</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#EA580C">' + n + '</span><span class="today-stat-label">Tahap Dicentang</span></div>'
+      + '</div>';
+    document.getElementById('gpBtnSubmit').innerHTML = '<i class="ti ti-send"></i> Kirim' + (n ? ' (' + n + ' tahap)' : '');
+  }
+
+  function submitGp() {
+    var items = [];
+    var perStage = [0, 0];
+    var missingPic = null;
+    Object.keys(gp.checked).forEach(function(row) {
+      var it = findGp(row);
+      if (!it) return;
+      var stages = Object.keys(gp.checked[row]).map(Number).sort(function(a, b) { return a - b; });
+      if (!stages.length) return;
+      var pic = '';
+      if (stages.indexOf(1) >= 0) {
+        pic = String(gpPicValue(it)).trim();
+        if (!pic && !missingPic) missingPic = it;
+      }
+      stages.forEach(function(s) { perStage[s]++; });
+      items.push({ row: it.row, sig: it.sig, stages: stages, pic: pic });
+    });
+    if (!items.length) { showToast('⚠️ Centang minimal 1 tahap yang sudah terpenuhi', 'error'); return; }
+    if (missingPic) {
+      showToast('⚠️ PIC Ambil wajib diisi (SPO ' + missingPic.spo + ' size ' + missingPic.size + ')', 'error');
+      var inp = document.querySelector('#gp-p-' + missingPic.row + ' .gp-pic-input');
+      if (inp) { inp.classList.add('need'); inp.focus(); }
+      return;
+    }
+
+    var lines = GP_STAGES.map(function(name, s) { return perStage[s] ? '• ' + name + ': ' + perStage[s] + ' baris' : null; }).filter(Boolean);
+    if (!window.confirm('Kirim tracking ganti pola untuk ' + items.length + ' baris?\n\n' + lines.join('\n')
+      + '\n\nTanggal & jam saat ini akan tercetak di kolom tahap yang dicentang.')) return;
+
+    showLoading(true, 'Mengirim tracking...');
+    var url = GAS_MEMO_URL + '?type=save_gp_kulit_tracking&payload=' + encodeURIComponent(JSON.stringify({ items: items }));
+    jsonp(url, function(err, result) {
+      showLoading(false);
+      if (err) {
+        showToast('Gagal terima konfirmasi server. Data mungkin sudah tersimpan — cek "Cek Data Terkirim" sebelum kirim ulang!', 'error');
+        loadGp();
+        return;
+      }
+      if (!result || result.status !== 'ok') { showToast('Gagal: ' + (result && result.message ? result.message : 'Coba lagi'), 'error'); return; }
+      gp.checked = {};
+      gp.pic = {};
+      if (result.skipped && result.skipped.length) {
+        showToast('✓ ' + result.updated + ' tahap tersimpan. ' + result.skipped.length + ' dilewati: ' + result.skipped.slice(0, 2).join('; '), 'error');
+      } else {
+        showToast('✓ ' + result.updated + ' tahap tersimpan (' + result.tanggal + ' ' + result.jam + ')', 'success');
+      }
+      setGpSentDay(0, true);
+      loadGp();
+    });
+  }
+
+  function setGpSentDay(day, noRender) {
+    gp.sentDay = day;
+    document.getElementById('gpSentTab0').classList.toggle('active', day === 0);
+    document.getElementById('gpSentTab1').classList.toggle('active', day === 1);
+    if (!noRender) renderGpSent();
+  }
+
+  function renderGpSent() {
+    var el = document.getElementById('gpSentList');
+    var target = gp.sentDay ? gp.yesterday : gp.today;
+    var dayLabel = gp.sentDay ? 'kemarin' : 'hari ini';
+    var list = [];
+    gp.items.forEach(function(it) {
+      it.stages.forEach(function(st, s) { if (st.val === target) list.push({ it: it, s: s, jam: st.jam }); });
+    });
+    if (!list.length) { el.innerHTML = '<div class="wip-empty">Belum ada tracking yang terkirim ' + dayLabel + ' (' + esc(target) + ').</div>'; return; }
+    list.sort(function(a, b) { return (b.jam || '').localeCompare(a.jam || '') || a.it.row - b.it.row; });
+    var qtyCut = 0, qtyAmbil = 0;
+    list.forEach(function(x) { var q = parseFloat(x.it.qty) || 0; if (x.s === 0) qtyCut += q; else qtyAmbil += q; });
+    var html = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + list.length + '</span><span class="today-stat-label">Tahap Terkirim</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + qtyCut + '</span><span class="today-stat-label">Qty Sudah Cutting</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + qtyAmbil + '</span><span class="today-stat-label">Qty Sudah Ambil</span></div>'
+      + '</div><div class="today-tablewrap"><table class="today-table"><thead><tr>'
+      + '<th>Jam</th><th>Tahap</th><th>SPO</th><th>Size</th><th>Pola</th><th>Qty</th><th>Line</th><th>PIC Ambil</th></tr></thead><tbody>';
+    list.forEach(function(x) {
+      html += '<tr><td>' + esc(x.jam) + '</td><td><span class="mk-done">' + esc(GP_STAGES[x.s]) + '</span></td>'
+        + '<td><b>' + esc(x.it.spo) + '</b></td><td>' + esc(x.it.size) + '</td><td>' + esc(x.it.pola) + '</td>'
+        + '<td>' + esc(x.it.qty) + '</td><td>' + esc(x.it.line) + '</td><td>' + esc(x.s === 1 ? x.it.pic : '') + '</td></tr>';
+    });
+    el.innerHTML = html + '</tbody></table></div><div class="today-scroll-hint">← geser tabel untuk lihat kolom lainnya →</div>';
   }
 
   // ---- START ----
