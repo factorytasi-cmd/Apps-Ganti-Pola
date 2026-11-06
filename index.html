@@ -179,6 +179,12 @@
     #page-gp-kulit .mk-table td.stage { background: rgba(234,88,12,0.03); }
     #page-gp-kulit .mk-table tr.has-check td { background: rgba(234,88,12,0.07); }
     #page-gp-kulit .wip-filter-input:focus { border-color: #EA580C; }
+    #page-gp-kulit .wip-toggle-btn.active { background: linear-gradient(135deg, #EA580C, #F97316); }
+    #page-gp-kulit .mk-steps { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    #page-gp-kulit .mk-step.next .mk-step-dot { background: rgba(234,88,12,0.15); color: #9A3E0A; border-color: #EA580C; }
+    #page-gp-kulit .mk-step.next { color: #9A3E0A; }
+    #page-gp-kulit .pill-wait { color: #9A3E0A; background: rgba(234,88,12,0.14); }
+    .gp-qty-badge { font-size: 11px; font-weight: 700; color: #111; background: #F3F3F1; border-radius: 99px; padding: 2px 8px; }
     .gp-pic-input { width: 120px; padding: 7px 8px; border-radius: 8px; border: 1.5px solid #E0E2E0; font-size: 12px; font-family: inherit; color: #111; background: white; outline: none; }
     .gp-pic-input:focus { border-color: #EA580C; }
     .gp-pic-input:disabled { background: #F4F4F2; color: #aaa; }
@@ -422,8 +428,19 @@
         <button type="button" class="retry-btn" onclick="loadGp()"><i class="ti ti-refresh"></i> Coba Lagi</button>
       </div>
 
+      <div class="wip-toggle">
+        <button type="button" class="wip-toggle-btn active" id="gpTabTrack" onclick="showGpView('track')"><i class="ti ti-checkbox"></i> Tracking</button>
+        <button type="button" class="wip-toggle-btn" id="gpTabStatus" onclick="showGpView('status')"><i class="ti ti-chart-dots"></i> Status Ganti Pola</button>
+      </div>
+
+      <!-- VIEW: TRACKING (checklist) -->
+      <div id="gpViewTrack">
       <div class="wip-filter">
-        <input type="text" class="wip-filter-input" id="gpFilterQ" placeholder="Cari SPO / Style / Line / Leader..." oninput="renderGpTable()">
+        <select class="wip-filter-input" id="gpFilterLine" onchange="renderGpTable()"><option value="">Semua Line</option></select>
+        <select class="wip-filter-input" id="gpFilterLeader" onchange="renderGpTable()"><option value="">Semua Leader</option></select>
+      </div>
+      <div class="wip-filter">
+        <select class="wip-filter-input" id="gpFilterSpo" onchange="renderGpTable()"><option value="">Semua SPO</option></select>
         <select class="wip-filter-input" id="gpFilterStage" onchange="renderGpTable()">
           <option value="">Semua tahap</option>
           <option value="0">Menunggu Sudah Cutting</option>
@@ -446,6 +463,25 @@
         <button type="button" class="today-tab-btn" id="gpSentTab1" onclick="setGpSentDay(1)">Kemarin</button>
       </div>
       <div id="gpSentList"><div class="wip-empty">Memuat...</div></div>
+      </div>
+
+      <!-- VIEW: STATUS GANTI POLA (monitoring semua permintaan) -->
+      <div id="gpViewStatus" style="display:none">
+        <div class="wip-filter">
+          <select class="wip-filter-input" id="gpStLine" onchange="renderGpStatus()"><option value="">Semua Line</option></select>
+          <select class="wip-filter-input" id="gpStLeader" onchange="renderGpStatus()"><option value="">Semua Leader</option></select>
+        </div>
+        <div class="wip-filter">
+          <select class="wip-filter-input" id="gpStSpo" onchange="renderGpStatus()"><option value="">Semua SPO</option></select>
+          <select class="wip-filter-input" id="gpStDone" onchange="renderGpStatus()">
+            <option value="wait">Belum selesai</option>
+            <option value="done">Sudah selesai</option>
+            <option value="">Semua permintaan</option>
+          </select>
+        </div>
+        <div id="gpStStats"></div>
+        <div class="wip-list" id="gpStatusList"><div class="wip-empty">Memuat data...</div></div>
+      </div>
     </div>
     <div class="footer-zone"></div>
   </div>
@@ -1036,6 +1072,67 @@
     setGpStatus('ok');
     renderGpTable();
     renderGpSent();
+    renderGpStatus();
+  }
+
+  function showGpView(which) {
+    document.getElementById('gpViewTrack').style.display  = which === 'track'  ? 'block' : 'none';
+    document.getElementById('gpViewStatus').style.display = which === 'status' ? 'block' : 'none';
+    document.getElementById('gpTabTrack').classList.toggle('active', which === 'track');
+    document.getElementById('gpTabStatus').classList.toggle('active', which === 'status');
+  }
+
+  // ---- STATUS GANTI POLA (monitoring semua permintaan, seperti Status Memo) ----
+  var GP_STATUS_LIMIT = 100;
+  var GP_STEP_SHORT = ['Cutting', 'Ambil'];
+
+  function renderGpStatus() {
+    var fDone = document.getElementById('gpStDone').value;
+    var base = gp.items.filter(function(it) {
+      if (fDone === 'wait' && it.done) return false;
+      if (fDone === 'done' && !it.done) return false;
+      return true;
+    });
+    populateGpFilters(base, GP_ST_FILTERS);
+    var v = gpFilterValues(GP_ST_FILTERS);
+    var list = base.filter(function(it) { return gpMatch(it, v, null, GP_ST_FILTERS); })
+      .slice().sort(function(a, b) { return b.row - a.row; }); // terbaru dulu
+
+    var doneN = gp.items.filter(function(it) { return it.done; }).length;
+    var totalQty = 0;
+    list.forEach(function(it) { totalQty += parseFloat(it.qty) || 0; });
+    document.getElementById('gpStStats').innerHTML = '<div class="today-stats">'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + gp.items.length + '</span><span class="today-stat-label">Total Permintaan</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#0A5C42">' + doneN + '</span><span class="today-stat-label">Selesai</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value" style="color:#EA580C">' + (gp.items.length - doneN) + '</span><span class="today-stat-label">Belum Selesai</span></div>'
+      + '<div class="today-stat-chip"><span class="today-stat-value">' + Math.round(totalQty * 100) / 100 + '</span><span class="today-stat-label">Qty (Filter)</span></div>'
+      + '</div>';
+
+    var el = document.getElementById('gpStatusList');
+    if (!list.length) { el.innerHTML = '<div class="wip-empty">Tidak ada permintaan yang cocok.</div>'; return; }
+
+    var shown = list.slice(0, GP_STATUS_LIMIT);
+    var html = shown.map(function(it) {
+      var ns = gpNext(it);
+      var doneCount = it.stages.filter(function(st) { return st.val; }).length;
+      var steps = it.stages.map(function(st, s) {
+        var cls = st.val ? 'done' : (s === ns ? 'next' : '');
+        var icon = st.val ? '<i class="ti ti-check"></i>' : (s + 1);
+        var sub = st.val ? esc(st.val) + (st.jam && st.jam !== st.val ? '<br>' + esc(st.jam) : '') : (s === ns ? 'Menunggu' : '-');
+        return '<div class="mk-step ' + cls + '"><div class="mk-step-dot">' + icon + '</div><div class="mk-step-name">' + esc(GP_STAGES[s]) + '</div>' + sub + '</div>';
+      }).join('');
+      return '<div class="wip-item">'
+        + '<div class="wip-item-top"><span class="wip-item-spo">' + esc(it.spo) + ' · Size ' + esc(it.size) + '</span>'
+        + '<span class="wip-item-pill ' + (it.done ? 'pill-done">✓ Selesai' : 'pill-wait">' + doneCount + '/' + GP_STAGES.length + ' · ' + esc(GP_STEP_SHORT[ns])) + '</span></div>'
+        + '<div class="wip-item-style">' + esc(it.style) + '</div>'
+        + '<div class="wip-item-meta">' + esc(it.tanggal) + ' · Line ' + esc(it.line) + ' · Leader ' + esc(it.leader) + (it.foreman ? ' · Foreman ' + esc(it.foreman) : '') + '</div>'
+        + '<div class="wip-item-meta">Pola ' + esc(it.pola || '-') + ' · ' + esc(it.material || '-') + ' · <span class="gp-qty-badge">Qty ' + esc(it.qty) + '</span></div>'
+        + '<div class="mk-steps">' + steps + '</div>'
+        + (it.stages[1].val ? '<div class="wip-item-meta" style="margin-top:8px">PIC Ambil: <b style="color:#111">' + esc(it.pic || '-') + '</b></div>' : '')
+        + '</div>';
+    }).join('');
+    if (list.length > shown.length) html += '<div class="wip-empty">Menampilkan ' + shown.length + ' dari ' + list.length + ' permintaan — persempit filter untuk melihat lainnya.</div>';
+    el.innerHTML = html;
   }
 
   function setGpStatus(state) {
@@ -1080,13 +1177,65 @@
       + (on ? '' : ' disabled') + ' placeholder="Nama PIC" autocomplete="off">';
   }
 
+  // Filter dropdown Line / Leader / SPO — pilihan tiap dropdown menyesuaikan pilihan dropdown lainnya,
+  // dan hanya berisi nilai dari permintaan yang belum selesai.
+  var GP_FILTERS = [
+    { key: 'line',   id: 'gpFilterLine',   all: 'Semua Line' },
+    { key: 'leader', id: 'gpFilterLeader', all: 'Semua Leader' },
+    { key: 'spo',    id: 'gpFilterSpo',    all: 'Semua SPO' }
+  ];
+
+  // Filter yang sama untuk tab Status Ganti Pola
+  var GP_ST_FILTERS = [
+    { key: 'line',   id: 'gpStLine',   all: 'Semua Line' },
+    { key: 'leader', id: 'gpStLeader', all: 'Semua Leader' },
+    { key: 'spo',    id: 'gpStSpo',    all: 'Semua SPO' }
+  ];
+
+  function gpFilterValues(defs) {
+    defs = defs || GP_FILTERS;
+    var v = {};
+    defs.forEach(function(f) { v[f.key] = document.getElementById(f.id).value; });
+    return v;
+  }
+
+  function gpMatch(it, v, skipKey, defs) {
+    defs = defs || GP_FILTERS;
+    for (var i = 0; i < defs.length; i++) {
+      var k = defs[i].key;
+      if (k !== skipKey && v[k] && it[k] !== v[k]) return false;
+    }
+    return true;
+  }
+
+  function populateGpFilters(pendingAll, defs) {
+    defs = defs || GP_FILTERS;
+    var v = gpFilterValues(defs);
+    defs.forEach(function(f) {
+      var seen = {}, opts = [];
+      pendingAll.forEach(function(it) {
+        if (!gpMatch(it, v, f.key, defs)) return;
+        var val = it[f.key];
+        if (val && !seen[val]) { seen[val] = true; opts.push(val); }
+      });
+      opts.sort(function(a, b) { return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }); });
+      var sel = document.getElementById(f.id);
+      var cur = v[f.key];
+      if (cur && !seen[cur]) cur = ''; // pilihan lama sudah tidak ada → kembali ke "Semua"
+      sel.innerHTML = '<option value="">' + f.all + '</option>'
+        + opts.map(function(o) { return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('');
+      sel.value = cur;
+    });
+  }
+
   function renderGpTable() {
-    var q = document.getElementById('gpFilterQ').value.toLowerCase().trim();
     var fStage = document.getElementById('gpFilterStage').value;
     var wrap = document.getElementById('gpTableWrap');
     var pendingAll = gp.items.filter(function(it) { return !it.done; });
+    populateGpFilters(pendingAll);
+    var v = gpFilterValues();
     gp.visible = pendingAll.filter(function(it) {
-      if (q && (it.spo + ' ' + it.style + ' ' + it.line + ' ' + it.leader + ' ' + it.size + ' ' + it.pola).toLowerCase().indexOf(q) < 0) return false;
+      if (!gpMatch(it, v, null)) return false;
       if (fStage !== '' && gpNext(it) !== Number(fStage)) return false;
       return true;
     });
