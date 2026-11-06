@@ -575,23 +575,23 @@
     if (!mk.visible.length) { wrap.innerHTML = '<div class="wip-empty">Tidak ada memo yang cocok dengan filter.</div>'; return; }
 
     var html = '<div class="today-tablewrap" id="mkScroll"><table class="today-table mk-table"><thead><tr>'
-      + '<th>Tanggal</th><th>SPO</th>';
+      + '<th>Tanggal</th><th>SPO</th><th>Style</th><th>Material</th><th>Jenis</th><th>Warna</th><th>Kekurangan (SF)</th>';
     STAGES.forEach(function(name, s) {
       html += '<th class="stage"><label>' + esc(STAGES_SHORT[s]) + '<input type="checkbox" class="mk-check mk-all" data-stage="' + s + '" title="Centang semua ' + esc(name) + '"></label></th>';
     });
-    html += '<th>Style</th><th>Material</th><th>Jenis</th><th>Warna</th><th>Kekurangan (SF)</th></tr></thead><tbody>';
+    html += '</tr></thead><tbody>';
     mk.visible.forEach(function(m) {
       html += '<tr id="mk-tr-' + m.row + '"' + (mk.checked[m.row] ? ' class="has-check"' : '') + '>'
         + '<td>' + esc(m.tanggal) + '</td>'
         + '<td class="col-spo">' + esc(m.spo)
-        + '<br><button type="button" class="mk-ket-btn" onclick="openMkKet(' + m.row + ')"><i class="ti ti-file-description"></i> Lihat keterangan</button></td>';
-      for (var s = 0; s < STAGES.length; s++) html += '<td class="stage" id="mk-c-' + m.row + '-' + s + '">' + stageCellHTML(m, s) + '</td>';
-      html += '<td class="col-style" title="' + esc(m.style) + '">' + esc(m.style) + '</td>'
+        + '<br><button type="button" class="mk-ket-btn" onclick="openMkKet(' + m.row + ')"><i class="ti ti-file-description"></i> Lihat keterangan</button></td>'
+        + '<td class="col-style" title="' + esc(m.style) + '">' + esc(m.style) + '</td>'
         + '<td>' + esc(m.material) + '</td>'
         + '<td class="col-style" title="' + esc(m.jenis) + '">' + esc(m.jenis) + '</td>'
         + '<td class="col-style" title="' + esc(m.warna) + '">' + esc(m.warna) + '</td>'
-        + '<td>' + esc(m.kekurangan) + '</td>'
-        + '</tr>';
+        + '<td>' + esc(m.kekurangan) + '</td>';
+      for (var s = 0; s < STAGES.length; s++) html += '<td class="stage" id="mk-c-' + m.row + '-' + s + '">' + stageCellHTML(m, s) + '</td>';
+      html += '</tr>';
     });
     html += '</tbody></table></div>';
     var oldScroll = document.getElementById('mkScroll');
